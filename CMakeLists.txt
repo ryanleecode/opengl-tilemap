@@ -3,6 +3,7 @@ project(opengl_tilemap C)
 
 add_subdirectory(glad)
 
+
 set(CMAKE_C_STANDARD 11)
 add_compile_options(-Wall -Wextra)
 add_executable(opengl_tilemap main.c)
