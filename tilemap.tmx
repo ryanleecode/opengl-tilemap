@@ -3,7 +3,7 @@
  <tileset firstgid="1" source="tilemap.tsx"/>
  <layer id="1" name="Tile Layer 1" width="16" height="16">
   <data encoding="base64" compression="zlib">
-   eJyl0kkOwjAMBVBfhg2cgXnYQgKd2DJJhZvAjk13cFR+JEcyUWKounhqm+arjuuGiJqOZjBvYRHkcyj+sIYNlJH8BM6KKRzgmMhv4ckGcIcH37s1I+qI5XcwhiFfX/AWz7/ylmswQS1GrFsl785/4X2ulhHLOH/iHmj1+/024M9mEvkaroqVOMMSbtCn7/lxM9FLyEW+5DWZd+8rSs/bXuQr/laYL0ifId9b7f/Jvsdk4vxt+ieF2a4+nb1nZg==
+   eJyl0kkOwjAMBVBfhk05A/OwhQQ6sWWSCjeBHRt2cFR+JEeyQmKounhqm+arjuuMiLKOpjBrYQ5PkS+g/MMK1lBF8mM4KSawh0Miv4EH68MN7nzv1oyoI5bfwggGfH3BWzz/yluuwQS1GLFulbw7/5n3uVqGLOf8kXug1e/324A/m0nkG7goluIMC7jS9/y4meglFCJf8ZrMu/c1pedtJ/I1fyvMl6TPkO+t9v9k32Nycf42/ZN8Vua7+ADXIU2e
   </data>
  </layer>
 </map>
