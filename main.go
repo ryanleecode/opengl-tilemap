@@ -76,23 +76,63 @@ func main() {
 	var vertices []float32
 	for j := 0; j < rowSize; j++ {
 		for i := 0; i < colSize; i++ {
-			vertices = append(vertices,
-				float32(i)-float32(gameMapWidth)/2,
-				float32(j)-float32(gameMapHeight)/2,
-			)
+			//	vertices = append(vertices,
+			//		float32(i)-float32(gameMapWidth)/2,
+			//		float32(j)-float32(gameMapHeight)/2,
+			//	)
 		}
 	}
 
 	fmt.Printf("%v\n", vertices)
 
+	var indices []uint32
+
 	// var uvs []float32
 	i := 0
 	for _, layer := range gameMap.Layers {
 		for _, tile := range layer.Tiles {
+
 			if !tile.Nil {
 				x := i % gameMapWidth
-				y := i / gameMapHeight
-				fmt.Printf("%d, %d\n", x, y)
+				y := -(i / gameMapHeight)
+
+				xOffset := float32(gameMapWidth) / 2
+				yOffset := float32(gameMapHeight)/2 - 1
+
+				tileSetWidth := tile.Tileset.Columns
+				tileSetHeight := tile.Tileset.TileCount / tileSetWidth
+
+				asdf := float32((tile.ID + 1) % uint32(tileSetWidth))
+				if float32(tile.ID+1)/float32(tileSetWidth) == float32((tile.ID+1)/uint32(tileSetWidth)) {
+					asdf = float32(tileSetWidth)
+				}
+
+				vertices = append(vertices,
+					float32(x)+1-xOffset, float32(y)+1+yOffset, // Top Right V
+					asdf/float32(tileSetWidth), 1-(float32(tile.ID/uint32(tileSetWidth))/float32(tileSetHeight)),
+
+					float32(x)-xOffset, float32(y)+1+yOffset, // Top Left V
+					float32(tile.ID%uint32(tileSetWidth))/float32(tileSetWidth), 1-(float32(tile.ID/uint32(tileSetWidth))/float32(tileSetHeight)),
+
+					float32(x)-xOffset, float32(y)+yOffset, // Bottom Left V
+					float32(tile.ID%uint32(tileSetWidth))/float32(tileSetWidth), 1-(float32(tile.ID/uint32(tileSetWidth)+1)/float32(tileSetHeight)),
+
+					float32(x)+1-xOffset, float32(y)+yOffset, // Bottom Right V
+					asdf/float32(tileSetWidth), 1-(float32(tile.ID/uint32(tileSetWidth)+1)/float32(tileSetHeight)),
+				)
+
+				indices = append(
+					indices,
+					uint32(i*4), uint32(i*4+1), uint32(i*4+2),
+					uint32(i*4), uint32(i*4+2), uint32(i*4+3))
+
+				fmt.Printf("%d, %d, %d, %d, %d, [(%f, %f), (%f, %f), (%f, %f), (%f, %f)]\n", x, y, tileSetWidth, tileSetHeight, tile.ID,
+					asdf/float32(tileSetWidth), 1-(float32(tile.ID/uint32(tileSetWidth))/float32(tileSetHeight)),
+
+					float32(tile.ID%uint32(tileSetWidth))/float32(tileSetWidth), 1-(float32(tile.ID/uint32(tileSetWidth))/float32(tileSetHeight)),
+					float32(tile.ID%uint32(tileSetWidth))/float32(tileSetWidth), 1-(float32(tile.ID/uint32(tileSetWidth)+1)/float32(tileSetHeight)),
+					asdf/float32(tileSetWidth), 1-(float32(tile.ID/uint32(tileSetWidth)+1)/float32(tileSetHeight)),
+				)
 			}
 			i++
 		}
@@ -100,18 +140,17 @@ func main() {
 
 	// fmt.Printf("%v\n", vertices)
 
-	var indices []uint32
 	for j := 0; j < gameMapHeight; j++ {
 		for i := 0; i < gameMapWidth; i++ {
-			bottomLeft := uint32(i + (j * colSize))
-			bottomRight := uint32(i + (j * colSize) + 1)
-			topLeft := uint32(((j + 1) * colSize) + i)
-			topRight := uint32(((j + 1) * colSize) + i + 1)
+			/* 			bottomLeft := uint32(i + (j * colSize))
+			   			bottomRight := uint32(i + (j * colSize) + 1)
+			   			topLeft := uint32(((j + 1) * colSize) + i)
+			   			topRight := uint32(((j + 1) * colSize) + i + 1)
 
-			indices = append(
-				indices,
-				topRight, topLeft, bottomLeft,
-				topRight, bottomLeft, bottomRight)
+			   			indices = append(
+			   				indices,
+			   				topRight, topLeft, bottomLeft,
+			   				topRight, bottomLeft, bottomRight) */
 		}
 	}
 
@@ -170,11 +209,13 @@ func main() {
 	var texture uint32
 	gl.GenTextures(1, &texture)
 	gl.BindTexture(gl.TEXTURE_2D, texture)
-	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE) // set texture wrapping to GL_REPEAT (default wrapping method)
-	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
+	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT) // set texture wrapping to GL_REPEAT (default wrapping method)
+	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT)
 	// set texture figl.ring parametgl.
-	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST)
-	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST)
+	// gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST_MIPMAP_LINEAR)
+	// gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST)
+	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
+	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
 	gl.TexImage2D(gl.TEXTURE_2D, 0, gl.RGBA,
 		int32(tileSetImg.Rect.Size().X), int32(tileSetImg.Rect.Size().Y),
 		0, gl.RGBA, gl.UNSIGNED_BYTE, gl.Ptr(tileSetImg.Pix))
@@ -183,7 +224,7 @@ func main() {
 	projectionUniform := gl.GetUniformLocation(prog, gl.Str("projection\x00"))
 	gl.UniformMatrix4fv(projectionUniform, 1, false, &projection[0])
 
-	camera := mgl32.LookAtV(mgl32.Vec3{0, 0, 22.5}, mgl32.Vec3{0, 0, 0}, mgl32.Vec3{0, 1, 0})
+	camera := mgl32.LookAtV(mgl32.Vec3{0, 0, 20.5}, mgl32.Vec3{0, 0, 0}, mgl32.Vec3{0, 1, 0})
 	cameraUniform := gl.GetUniformLocation(prog, gl.Str("camera\x00"))
 	gl.UniformMatrix4fv(cameraUniform, 1, false, &camera[0])
 
@@ -255,6 +296,8 @@ func main() {
 
 		gl.BindVertexArray(vao)
 
+		/* 		gl.DrawElements(
+		gl.TRIANGLES, int32(len(indices)), gl.UNSIGNED_INT, gl.PtrOffset(0))  */
 		gl.DrawElements(
 			gl.TRIANGLES, int32(len(indices)), gl.UNSIGNED_INT, gl.PtrOffset(0))
 
@@ -289,10 +332,10 @@ func loadTexture(img *image.RGBA) uint32 {
 	var texture uint32
 	gl.GenTextures(1, &texture)
 	gl.BindTexture(gl.TEXTURE_2D, texture)
-	//	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
-	//	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
-	//	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
-	//	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
+	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
+	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
+	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
+	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
 	gl.TexImage2D(gl.TEXTURE_2D, 0, gl.RGBA,
 		int32(img.Rect.Size().X), int32(img.Rect.Size().Y),
 		0, gl.RGBA, gl.UNSIGNED_BYTE, gl.Ptr(img.Pix))
