@@ -1,10 +1,9 @@
-#version 330 core
+#version 410 core
 out vec4 outputColor;
 
 in vec2 fragTexCoord;
-uniform sampler2D texture1;
+uniform sampler2D tileAtlas;
 
 void main() {
- // outputColor = vec4(fragTexCoord, 0.0f, 1.0f);
-   outputColor =  texture(texture1, fragTexCoord);
+   outputColor =  texture(tileAtlas, fragTexCoord);
 }

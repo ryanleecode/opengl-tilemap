@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.4" tiledversion="1.4.1" orientation="orthogonal" renderorder="right-down" width="16" height="16" tilewidth="32" tileheight="32" infinite="0" nextlayerid="2" nextobjectid="1">
- <tileset firstgid="1" source="tilemap.tsx"/>
- <layer id="1" name="Tile Layer 1" width="16" height="16">
+<map version="1.4" tiledversion="1.4.1" orientation="orthogonal" renderorder="right-down" width="16" height="16" tilewidth="32" tileheight="32" infinite="0" nextlayerid="6" nextobjectid="1">
+ <tileset firstgid="1" source="tilemap4.tsx"/>
+ <layer id="5" name="Tile Layer 2" width="16" height="16">
   <data encoding="base64" compression="zlib">
-   eJyl0kkOwjAMBVBfhk05A/OwhQQ6sWWSCjeBHRt2cFR+JEeyQmKounhqm+arjuuMiLKOpjBrYQ5PkS+g/MMK1lBF8mM4KSawh0Miv4EH68MN7nzv1oyoI5bfwggGfH3BWzz/yluuwQS1GLFulbw7/5n3uVqGLOf8kXug1e/324A/m0nkG7goluIMC7jS9/y4meglFCJf8ZrMu/c1pedtJ/I1fyvMl6TPkO+t9v9k32Nycf42/ZN8Vua7+ADXIU2e
+   eJyl0ksKwjAQBuC5mO/HVoPWWHETfIH2JnqA7vSo/oEJDOMkRbr4KGnzk8l0WiJqe5rC7A9zld9BYF4JwgrWsDfyY7gWTOAE50x+A0fhCS+xdqIOK7+FEQz4+YaPWHflA9fgVC1OvC/l4/1vvC/WMmQV5y/cg1L9aX9Q0t1cJn+HR8FS3GEBDf3Oj54J6/844+z0vab8vB1EvjbOinlP5RlKvc31z6u+W6rM/bv6J+lsX1/1+2wF
   </data>
  </layer>
 </map>

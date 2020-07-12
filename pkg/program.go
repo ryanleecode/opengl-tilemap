@@ -4,7 +4,7 @@ import (
 	"io/ioutil"
 	"strings"
 
-	"github.com/go-gl/gl/v3.3-core/gl"
+	"github.com/go-gl/gl/v4.1-core/gl"
 	"github.com/pkg/errors"
 )
 
@@ -74,6 +74,7 @@ func BuildProgram(shaderOptionsList []ShaderOptions) (uint32, error) {
 			return 0, errors.Wrap(err, "failed to build program")
 		}
 		gl.AttachShader(prog, shader)
+		gl.DeleteShader(shader)
 	}
 
 	gl.LinkProgram(prog)
